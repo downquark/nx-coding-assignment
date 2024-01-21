@@ -1,11 +1,18 @@
+import * as React from 'react';
 import styles from './tickets.module.css';
-import TicketDetails from '../ticket-details/ticket-details';
 import type { RootState } from '../store'
 import { useSelector, useDispatch} from 'react-redux'
 import { add } from './ticketSlice';
 import {useGetTicketsQuery} from '../services/ticket-api'
 import {useGetUsersQuery} from '../services/user-api'
 import { Ticket } from '@acme/shared-models';
+import List from '@mui/material/List';
+import ListItemButton from '@mui/material/ListItemButton';
+import Divider from '@mui/material/Divider';
+import ListItemText from '@mui/material/ListItemText';
+import Typography from '@mui/material/Typography';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Checkbox from '@mui/material/Checkbox';
 
 // export interface TicketsProps {
 //   tickets: Ticket[];
@@ -28,13 +35,44 @@ export function Tickets() {
     ) : ticketLoading || userLoading ? (
       <>Loading...</>
     ) : tickets && users ? (
-      <ul>
+      <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
         {tickets.map((t: Ticket) => (
-          <li key={t.id}>
-            <TicketDetails ticket={t} users={users} />
-          </li>
+          <>
+            <ListItemButton component="a" href={t.id.toString()} alignItems="flex-start" key={t.id}>
+              <ListItemIcon>
+                <Checkbox
+                  edge="start"
+                  checked={t.completed}
+                  tabIndex={-1}
+                  disableRipple
+                  disabled
+                />
+              </ListItemIcon>
+              <ListItemText
+              primary={t.id}
+              secondary={
+                <React.Fragment>
+                  <Typography
+                    sx={{ display: 'inline' }}
+                    component="span"
+                    variant="body2"
+                    color="text.primary"
+                  >
+                    {users.map((u: User) => {
+                      if (t.assigneeId === u.id) {
+                        return u.name;
+                      }
+                    })}
+                  </Typography>
+                  {" — " + t.description}
+                </React.Fragment>
+              }
+            />
+          </ListItemButton>
+          <Divider component="li" />
+        </>
         ))}
-      </ul>
+        </List>
         ) : null}
       </div>
       <button
