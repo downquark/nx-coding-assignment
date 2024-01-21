@@ -1,13 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit'
 // Or from '@reduxjs/toolkit/query/react'
-import ticketReducer from './tickets/ticketSlice'
-import { ticketApi} from './services/ticket-api'
-import { userApi} from './services/user-api'
+import { ticketApi } from './services/ticket-api'
+import { userApi } from './services/user-api'
 
 export const store = configureStore({
   reducer: {
-    tickets: ticketReducer,
-
     // Add the generated reducer as a specific top-level slice
     [ticketApi.reducerPath]: ticketApi.reducer,
     [userApi.reducerPath]: userApi.reducer,

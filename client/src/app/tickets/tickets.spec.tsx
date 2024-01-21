@@ -4,7 +4,7 @@ import Tickets from './tickets';
 
 describe('Tickets', () => {
   it('should render successfully', () => {
-    const { baseElement } = render(<Tickets tickets={[]} users={[]} />);
+    const { baseElement } = render(<Tickets />);
     expect(baseElement).toBeTruthy();
   });
 });

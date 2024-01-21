@@ -31,6 +31,18 @@ export const ticketApi = createApi({
             query: (id) => `${id}`,
             providesTags: (result, error, id) => [{ type: 'Tickets', id }],
         }),
+        addTicket: builder.mutation<Ticket, Partial<Ticket>>({
+          query(body) {
+            return {
+              url: '',
+              method: 'POST',
+              body,
+            }
+          },
+          // Invalidates all Ticket-type queries providing the `LIST` id - after all, depending of the sort order,
+          // that newly created ticket could show up in any lists.
+          invalidatesTags: [{ type: 'Tickets', id: 'LIST' }],
+        }),
         assignTicket: builder.mutation<any, { ticketId: number; userId: number }>({
             query: ({ ticketId, userId }) => ({
                 url: `${ticketId}/assign/${userId}`,
@@ -38,7 +50,16 @@ export const ticketApi = createApi({
             }),
             // Invalidates all queries that subscribe to this Ticket `id` only.
             // In this case, `getTicket` will be re-run. `getTickets` *might*  rerun, if this id was under its results.
-            invalidatesTags: (result, error, { id }) => [{ type: 'Tickets', id }],
+            invalidatesTags: (result, error, { ticketId }) => [{ type: 'Tickets', ticketId }, { type: 'Tickets', id: 'LIST' }],
+        }),
+        unassignTicket: builder.mutation<any, number>({
+            query: (id) => ({
+                url: `${id}/unassign`,
+                method: 'PUT'
+            }),
+            // Invalidates all queries that subscribe to this Ticket `id` only.
+            // In this case, `getTicket` will be re-run. `getTickets` *might*  rerun, if this id was under its results.
+            invalidatesTags: (result, error, id) => [{ type: 'Tickets', id }, { type: 'Tickets', id: 'LIST' }],
         }),
         completeTicket: builder.mutation<any, number>({
             query: (id) => ({
@@ -47,9 +68,18 @@ export const ticketApi = createApi({
             }),
             // Invalidates all queries that subscribe to this Ticket `id` only.
             // In this case, `getTicket` will be re-run. `getTickets` *might*  rerun, if this id was under its results.
-            invalidatesTags: (result, error, { id }) => [{ type: 'Tickets', id }],
+            invalidatesTags: (result, error, id) => [{ type: 'Tickets', id }, { type: 'Tickets', id: 'LIST' }],
+        }),
+        incompleteTicket: builder.mutation<any, number>({
+            query: (id) => ({
+                url: `${id}/complete`,
+                method: 'DELETE'
+            }),
+            // Invalidates all queries that subscribe to this Ticket `id` only.
+            // In this case, `getTicket` will be re-run. `getTickets` *might*  rerun, if this id was under its results.
+            invalidatesTags: (result, error, id) => [{ type: 'Tickets', id }, { type: 'Tickets', id: 'LIST' }],
         })
     }),
 })
 
-export const { useGetTicketsQuery, useGetTicketByIdQuery, useAssignTicketMutation, useCompleteTicketMutation } = ticketApi
+export const { useGetTicketsQuery, useGetTicketByIdQuery, useAddTicketMutation, useAssignTicketMutation, useUnassignTicketMutation, useCompleteTicketMutation, useIncompleteTicketMutation } = ticketApi

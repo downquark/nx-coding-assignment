@@ -1,6 +1,5 @@
 import styles from "./ticket-details.module.css";
-import { Ticket,User } from '@acme/shared-models';
-import { useDispatch } from 'react-redux'
+import { User } from '@acme/shared-models';
 import Switch from '@mui/material/Switch';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -12,30 +11,38 @@ import { useParams } from 'react-router-dom';
 
 /* eslint-disable-next-line */
 export function TicketDetails() {
-  const dispatch = useDispatch()
   let { id } = useParams();
-  const { data: ticket, error: ticketError, isLoading: ticketLoading } = api.useGetTicketByIdQuery(id)
+  const { data: ticket, error: ticketError, isLoading: ticketLoading } = api.useGetTicketByIdQuery(Number(id))
   const { data: users, error: userError, isLoading: userLoading } = useGetUsersQuery()
   const [triggerAssign, {error: assignError}] = api.useAssignTicketMutation();
+  const [triggerUnassign, {error: unassignError}] = api.useUnassignTicketMutation();
   const [triggerComplete, {error: completeError}] = api.useCompleteTicketMutation();
+  const [triggerIncomplete, {error: incompleteError}] = api.useIncompleteTicketMutation();
 
-  const handleChecked = (event: React.ChangeEvent<HTMLInputElement>) => {
-    triggerComplete(id);
-    // setChecked(event.target.checked);
+  const toggleCompleted = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.checked) {
+      triggerComplete(Number(id));
+    } else {
+      triggerIncomplete(Number(id));
+    }
   };
   const handleChange = (event: SelectChangeEvent) => {
-    triggerAssign({ticketId: id, userId: event.target.value});
+    if (event.target.value) {
+      triggerAssign({ticketId: Number(id), userId: event.target.value});
+    } else {
+      triggerUnassign(Number(id));
+    }
   };
   return (
     <div className={styles["container"]}>
+    <h2>Ticket #{id} Details</h2>
     {
-      ticketError || userError || assignError || completeError ? (
+      ticketError || userError || assignError || unassignError || completeError || incompleteError ? (
       <>Oh no, there was an error</>
     ) : ticketLoading || userLoading ? (
       <>Loading...</>
     ) : ticket && users ? (
       <pre>
-        <div>id: {ticket.id}</div>
         <div>description: {ticket.description}</div>
         <div>assigneeId: 
           <FormControl sx={{ m: 1, minWidth: 80 }}>
@@ -59,8 +66,9 @@ export function TicketDetails() {
         </div>
         <div>completed: 
           <Switch
+            id="completed"
             checked={ticket.completed}
-            onChange={handleChecked}
+            onChange={toggleCompleted}
             inputProps={{ 'aria-label': 'Complete task' }}
           />
         </div>
