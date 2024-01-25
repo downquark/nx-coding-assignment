@@ -72,6 +72,14 @@
           "buildTarget": "client:build:production"
         }
       }
+    },
+    "e2e": {
+      "executor": "@nx/cypress:cypress",
+      "options": {
+        "cypressConfig": "client/cypress.config.ts",
+        "testingType": "e2e",
+        "baseUrl": "http://localhost:4200"
+      }
     }
   },
   "tags": []

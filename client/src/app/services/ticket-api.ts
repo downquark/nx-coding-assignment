@@ -1,7 +1,6 @@
 // Need to use the React-specific entry point to import createApi
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { Ticket } from '@acme/shared-models';
-import { number } from 'prop-types';
 
 export const ticketApi = createApi({
     reducerPath: 'ticketApi',
@@ -29,7 +28,7 @@ export const ticketApi = createApi({
         }),
         getTicketById: builder.query<Ticket, number>({
             query: (id) => `${id}`,
-            providesTags: (result, error, id) => [{ type: 'Tickets', id }],
+            providesTags: (_result, _error, id) => [{ type: 'Tickets', id }],
         }),
         addTicket: builder.mutation<Ticket, Partial<Ticket>>({
           query(body) {
@@ -50,7 +49,7 @@ export const ticketApi = createApi({
             }),
             // Invalidates all queries that subscribe to this Ticket `id` only.
             // In this case, `getTicket` will be re-run. `getTickets` *might*  rerun, if this id was under its results.
-            invalidatesTags: (result, error, { ticketId }) => [{ type: 'Tickets', ticketId }, { type: 'Tickets', id: 'LIST' }],
+            invalidatesTags: (_result, _error, { ticketId }) => [{ type: 'Tickets', ticketId }, { type: 'Tickets', id: 'LIST' }],
         }),
         unassignTicket: builder.mutation<any, number>({
             query: (id) => ({
@@ -59,7 +58,7 @@ export const ticketApi = createApi({
             }),
             // Invalidates all queries that subscribe to this Ticket `id` only.
             // In this case, `getTicket` will be re-run. `getTickets` *might*  rerun, if this id was under its results.
-            invalidatesTags: (result, error, id) => [{ type: 'Tickets', id }, { type: 'Tickets', id: 'LIST' }],
+            invalidatesTags: (_result, _error, id) => [{ type: 'Tickets', id }, { type: 'Tickets', id: 'LIST' }],
         }),
         completeTicket: builder.mutation<any, number>({
             query: (id) => ({
@@ -68,7 +67,7 @@ export const ticketApi = createApi({
             }),
             // Invalidates all queries that subscribe to this Ticket `id` only.
             // In this case, `getTicket` will be re-run. `getTickets` *might*  rerun, if this id was under its results.
-            invalidatesTags: (result, error, id) => [{ type: 'Tickets', id }, { type: 'Tickets', id: 'LIST' }],
+            invalidatesTags: (_result, _error, id) => [{ type: 'Tickets', id }, { type: 'Tickets', id: 'LIST' }],
         }),
         incompleteTicket: builder.mutation<any, number>({
             query: (id) => ({
@@ -77,7 +76,7 @@ export const ticketApi = createApi({
             }),
             // Invalidates all queries that subscribe to this Ticket `id` only.
             // In this case, `getTicket` will be re-run. `getTickets` *might*  rerun, if this id was under its results.
-            invalidatesTags: (result, error, id) => [{ type: 'Tickets', id }, { type: 'Tickets', id: 'LIST' }],
+            invalidatesTags: (_result, _error, id) => [{ type: 'Tickets', id }, { type: 'Tickets', id: 'LIST' }],
         })
     }),
 })

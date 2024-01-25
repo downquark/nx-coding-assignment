@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import styles from './tickets.module.css';
 import {useGetTicketsQuery, useAddTicketMutation} from '../services/ticket-api'
 import {useGetUsersQuery} from '../services/user-api'
-import { Ticket } from '@acme/shared-models';
+import { Ticket, User } from '@acme/shared-models';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import Divider from '@mui/material/Divider';

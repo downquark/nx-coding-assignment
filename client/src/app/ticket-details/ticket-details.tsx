@@ -28,7 +28,7 @@ export function TicketDetails() {
   };
   const handleChange = (event: SelectChangeEvent) => {
     if (event.target.value) {
-      triggerAssign({ticketId: Number(id), userId: event.target.value});
+      triggerAssign({ticketId: Number(id), userId: Number(event.target.value)});
     } else {
       triggerUnassign(Number(id));
     }
@@ -50,7 +50,7 @@ export function TicketDetails() {
             <Select
               labelId="demo-simple-select-autowidth-label"
               id="demo-simple-select-autowidth"
-              value={ticket.assigneeId}
+              value={ticket.assigneeId?.toString()}
               onChange={handleChange}
               autoWidth
               label="Assignee"
